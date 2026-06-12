@@ -76,34 +76,67 @@ function filterProducts(category){
 
     displayProducts(filtered);
 }
+function addToCart(id) {
+    const existingItem = cart.find(item => item.id === id);
 
-function addToCart(id){
-    const item = products.find(p => p.id === id);
-    cart.push(item);
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        const product = products.find(p => p.id === id);
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+        cart.push({
+            ...product,
+            quantity: 1
+        });
+    }
 
     updateCart();
 }
+function increaseQuantity(index) {
+    cart[index].quantity++;
+    updateCart();
+}
 
-function updateCart(){
+function decreaseQuantity(index) {
+    if (cart[index].quantity > 1) {
+        cart[index].quantity--;
+    } else {
+        cart.splice(index, 1);
+    }
+
+    updateCart();
+}
+function updateCart() {
     cartItems.innerHTML = "";
 
     let total = 0;
 
-    cart.forEach(item => {
-        total += item.price;
+    cart.forEach((item, index) => {
+        total += item.price * item.quantity;
 
         cartItems.innerHTML += `
         <div class="cart-item">
-            <span>${item.name}</span>
-            <span>₹${item.price}</span>
+            <div>
+                <h4>${item.name}</h4>
+                <p>₹${item.price}</p>
+            </div>
+
+            <div class="quantity-controls">
+                <button onclick="decreaseQuantity(${index})">−</button>
+                <span>${item.quantity}</span>
+                <button onclick="increaseQuantity(${index})">+</button>
+            </div>
         </div>
         `;
     });
 
     totalElement.textContent = total;
-    cartCount.textContent = cart.length;
+    cartCount.textContent = cart.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+    );
+
+    localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 searchInput.addEventListener("input", () => {
