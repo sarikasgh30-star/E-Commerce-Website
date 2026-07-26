@@ -45,7 +45,7 @@ Add screenshots of your project here.
 1. Clone the repository:
 
    ```
-   git clone https://github.com/your-username/ecommerce-website.git
+   git clone https://github.com/sarikasgh30-star/ecommerce-website.git
    ```
 
 2. Open the project folder.
